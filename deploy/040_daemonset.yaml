@@ -42,9 +42,6 @@ spec:
           initialDelaySeconds: 3
           timeoutSeconds: 240
         volumeMounts:
-        - name: monitor-volume
-          mountPath: /monitor
-          readOnly: true
         - mountPath: /etc/pki/ca-trust/extracted/pem
           name: trusted-ca-bundle
           readOnly: true
@@ -54,9 +51,6 @@ spec:
       tolerations:
       - operator: Exists
       volumes:
-      - name: monitor-volume
-        configMap:
-          name: sre-dns-latency-exporter-code
       - name: trusted-ca-bundle
         configMap:
           defaultMode: 420

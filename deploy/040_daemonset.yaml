@@ -17,12 +17,12 @@ spec:
     spec:
       containers:
       - name: "main"
-        command: [ "/bin/sh", "/monitor/start.sh" ]
+        command: [ "/bin/sh", "/start.sh" ]
         workingDir: /monitor
         ports:
         - containerPort: 8080
           protocol: "TCP"
-        image: quay.io/app-sre/managed-prometheus-exporter-base:latest
+        image: quay.io/rhn_support_sreber/dns-latency:latest
         env:
         - name: PYTHONPATH
           value: /openshift-python/packages:/support/packages

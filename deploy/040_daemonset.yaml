@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: sre-dns-latency-exporter
+  namespace: openshift-monitoring
+  labels:
+    name: sre-dns-latency-exporter
+spec:
+  selector:
+    matchLabels:
+      name: sre-dns-latency-exporter
+  template:
+    metadata:
+      name: sre-dns-latency-exporter
+      labels:
+        name: sre-dns-latency-exporter
+    spec:
+      containers:
+      - name: "main"
+        command: [ "/bin/sh", "/monitor/start.sh" ]
+        workingDir: /monitor
+        ports:
+        - containerPort: 8080
+          protocol: "TCP"
+        image: quay.io/app-sre/managed-prometheus-exporter-base:latest
+        env:
+        - name: PYTHONPATH
+          value: /openshift-python/packages:/support/packages
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 2
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 420
+          periodSeconds: 360
+          timeoutSeconds: 240
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 3
+          timeoutSeconds: 240
+        volumeMounts:
+        - name: monitor-volume
+          mountPath: /monitor
+          readOnly: true
+        - mountPath: /etc/pki/ca-trust/extracted/pem
+          name: trusted-ca-bundle
+          readOnly: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      serviceAccountName: sre-dns-latency-exporter
+      tolerations:
+      - operator: Exists
+      volumes:
+      - name: monitor-volume
+        configMap:
+          name: sre-dns-latency-exporter-code
+      - name: trusted-ca-bundle
+        configMap:
+          defaultMode: 420
+          items:
+            - key: ca-bundle.crt
+              path: tls-ca-bundle.pem
+          name: sre-dns-latency-exporter-trusted-ca-bundle
+

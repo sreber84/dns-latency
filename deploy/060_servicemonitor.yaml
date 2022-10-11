@@ -9,10 +9,10 @@ metadata:
 spec:
   endpoints:
   - honorLabels: true
-    interval: 2m
+    interval: 10s
     port: http-main
     scheme: http
-    scrapeTimeout: 2m
+    scrapeTimeout: 10s
     targetPort: 0
   jobLabel: sre-dns-latency-exporter
   namespaceSelector: {}

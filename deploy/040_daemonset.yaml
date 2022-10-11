@@ -22,7 +22,7 @@ spec:
         ports:
         - containerPort: 8080
           protocol: "TCP"
-        image: quay.io/rhn_support_sreber/dns-latency:latest
+        image: quay.io/rhn_support_sreber/dns-latency-exporter:latest
         env:
         - name: PYTHONPATH
           value: /openshift-python/packages:/support/packages
